@@ -12,7 +12,7 @@ The algorithm I'm proposing here is very simple:
 4. Apply a median blur to the mask to eliminate more noise
 5. Dilate the mask to further eliminate noise and expand a bit the contour
 6. Gaussian blur the mask to make the edges smooth
-7. Apply a color change to make the background the choose color (e.g. use green and export to OBS to use as chroma key)
+7. Set the new background (e.g. use green and export to OBS to use as chroma key)
 
 ## How to use it
 
