@@ -11,11 +11,24 @@ outdev = '/dev/video10' # virtual webcam from v4l2loopback module
 resfps = [640, 480, 30] # resolution and fps for both input and output
 chromakey = [0, 255, 0] # color for the new background in BGR
 #
-dilate_size = 10 # number of pixels to dilate the mask before blur
-threshold_min = 5 # level to make the mask binary
-mblur = 31 # median blur to elimante noise from the mask
-gblur = 51 # gaussian blur to make the mask edges smooth
-
+dilate_size = 5 # number of pixels to dilate the mask before blur
+threshold_min = 10 # level to make the mask binary
+mblur = 21 # median blur to elimante noise from the mask
+gblur = 21 # gaussian blur to make the mask edges smooth
+#
+newback = cv.imread('ImageTest640x480.JPG')
+# define replacement function here to avoid ifs below
+# comment / uncomment your choice
+def applymask(frame, mask):
+    # using chromakey
+    frame[:,:,0] = frame[:,:,0] * mask + (1-mask)*chromakey[0]
+    frame[:,:,1] = frame[:,:,1] * mask + (1-mask)*chromakey[1]
+    frame[:,:,2] = frame[:,:,2] * mask + (1-mask)*chromakey[2]
+    # or replacing with image
+    #frame[:,:,0] = frame[:,:,0] * mask + (1-mask)*newback[:,:,0]
+    #frame[:,:,1] = frame[:,:,1] * mask + (1-mask)*newback[:,:,1]
+    #frame[:,:,2] = frame[:,:,2] * mask + (1-mask)*newback[:,:,2]
+    
 
 '''
     OPEN VIDEO CAPTURE DEVICE AND SET ITS RESOLUTION AND FPS
@@ -49,7 +62,7 @@ gauss = gauss * gauss.transpose(1, 0)
 '''
 # first image as background
 # can be changed later by pressing 'c'
-ret, back = cap.read() 
+ret, back = cap.read()
 # loop until key 'q' is pressed
 while(True): 
     # read a frame
@@ -64,22 +77,19 @@ while(True):
     
     # apply gaussian blur to the mask to eliminate some noise
     mask = cv.medianBlur(mask, mblur)
+    # erode and dilate back to eliminate small noise
+    mask = cv.erode(mask, kernel)
+    mask = cv.erode(mask, kernel)
+    mask = cv.erode(mask, kernel)
+    mask = cv.dilate(mask, kernel)
+    mask = cv.dilate(mask, kernel)
+    mask = cv.dilate(mask, kernel)
     mask = cv.dilate(mask, kernel)
     mask = cv.GaussianBlur(mask, (gblur, gblur), 0)
-        
-    # apply mask and save each component
+    
+    # apply mask to each component and change background
     mask = mask / 255
-    f0 = frame[:,:,0] * mask
-    f1 = frame[:,:,1] * mask
-    f2 = frame[:,:,2] * mask
-    # change color by adding its complement
-    f0 += (1-mask)*chromakey[0]
-    f1 += (1-mask)*chromakey[1]
-    f2 += (1-mask)*chromakey[2]
-    # save back to frame
-    frame[:,:,0] = f0
-    frame[:,:,1] = f1
-    frame[:,:,2] = f2
+    applymask(frame, mask) # inplace replacement, function defined above
     
     # show result on opencv window 
     # must stay open so we can press 'c' to update background photo
@@ -88,7 +98,7 @@ while(True):
     # pipe result to ffmpeg
     frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
     frame = Image.fromarray(np.uint8(frame))
-    frame.save(out.stdin, 'JPEG')
+    frame.save(out.stdin, 'BMP')
     
     # check key
     keypressed = cv.waitKey(1)
@@ -107,5 +117,3 @@ cap.release()
 cv.destroyAllWindows()
 out.stdin.close()
 out.wait()
-
-
