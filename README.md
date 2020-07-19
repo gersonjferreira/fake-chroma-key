@@ -47,8 +47,15 @@ To properly remove the background you need good lighting and you must allow the 
 
 ## To do
 
-The code works well for me as it is. But it would be great if we could improve it and rewrite as a C library to be integrated into [webcamoid](https://webcamoid.github.io/), or as an [OBS Studio](https://obsproject.com/) plugin.
+The code works well for me as it is. But it would be great if we could improve it by:
 
+- rewrite as a C library to be integrated into [webcamoid](https://webcamoid.github.io/), or as an [OBS Studio](https://obsproject.com/) plugin.
+- organize it as a proper python library and cythonize it.
+- replace with ffmpeg pipe with a better approach to stream to the virtual device using v4l2 directly.
+
+# Acknowledgements
+
+I would like to thank all involved in the discussion at the [webcamoid github forum](https://github.com/webcamoid/webcamoid/issues/250) for the suggestions. As discussed there, there's a much better code beeing developed: https://grail.cs.washington.edu/projects/background-matting/, but while it is not finished, I'll use mine ;-)
 
 
 
