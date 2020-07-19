@@ -2,6 +2,10 @@
 
 This is a very simple code to capture a webcam stream, remove its background using [openCV](https://opencv.org/) and export it as a virtual webcam using the [v4l2loopback](https://github.com/umlaeute/v4l2loopback) module using a pipe to [ffmpeg](https://ffmpeg.org/).
 
+Check my video showing the code running on my (youtube channel)[https://youtu.be/ly5gwzSZ_MQ]. For this video I've added a few openCV windows to show the mask and illustrate the code working, which made the code too heavy and the video has some lags because of this. But showing a single openCV window is not that heavy. In any case, in the next version I'll improve it all a bit, adding an option to hide the screen and simply export to the virtual webcam.
+
+## How does it work?
+
 Once the code is running and streaming the content to a virtual webcam, you can use it as an input to any other program (zoom, skype, [OBS Studio](https://obsproject.com/), etc...).
 
 The algorithm I'm proposing here is very simple:
