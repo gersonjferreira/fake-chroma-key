@@ -40,7 +40,7 @@ $ sudo rmmod v4l2loopback
 
 ### Edit the parameters and run the python script
 
-At the begining of the code you should check some parameters. Particularly `indev` and `outdev` for the input and output devices.
+At the beginning of the code you should check some parameters. Particularly `indev` and `outdev` for the input and output devices.
 
 - **indev** refers to the input device, which will be passed to opencv. For instance, if the input webcam is `/dev/video0`, then `indev=0`.
 - **outdev** refers to the output device for a virtual webcam. In the **v4l2loopback** example above it would be `/dev/video10`. 
@@ -59,7 +59,7 @@ The code works well for me as it is. But it would be great if we could improve i
 
 # Acknowledgements
 
-I would like to thank all involved in the discussion at the [webcamoid github forum](https://github.com/webcamoid/webcamoid/issues/250) for the suggestions. As discussed there, there's a much better code beeing developed: https://grail.cs.washington.edu/projects/background-matting/, but while it is not finished, I'll use mine ;-)
+I would like to thank all involved in the discussion at the [webcamoid github forum](https://github.com/webcamoid/webcamoid/issues/250) for the suggestions. As discussed there, there's a much better code being developed: https://grail.cs.washington.edu/projects/background-matting/, but while it is not finished, I'll use mine ;-)
 
 
 
