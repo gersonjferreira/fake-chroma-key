@@ -33,16 +33,16 @@ def how_to_apply_mask(howto):
         def applymask(frame, mask, newback):
             # newback is ignored in this case
             newframe = np.empty_like(frame)
-            newframe[:,:,0] = frame[:,:,0] * mask + (1-mask)*chromakey[0]
+            newframe[:,:,2] = frame[:,:,0] * mask + (1-mask)*chromakey[0]
             newframe[:,:,1] = frame[:,:,1] * mask + (1-mask)*chromakey[1]
-            newframe[:,:,2] = frame[:,:,2] * mask + (1-mask)*chromakey[2]
+            newframe[:,:,0] = frame[:,:,2] * mask + (1-mask)*chromakey[2]
             return newframe
     elif howto == "blur" or isfile(howto):
         def applymask(frame, mask, newback):
             newframe = np.empty_like(frame)
-            newframe[:,:,0] = frame[:,:,0] * mask + (1-mask)*newback[:,:,0]
+            newframe[:,:,2] = frame[:,:,0] * mask + (1-mask)*newback[:,:,0]
             newframe[:,:,1] = frame[:,:,1] * mask + (1-mask)*newback[:,:,1]
-            newframe[:,:,2] = frame[:,:,2] * mask + (1-mask)*newback[:,:,2]
+            newframe[:,:,0] = frame[:,:,2] * mask + (1-mask)*newback[:,:,2]
             return newframe
     return applymask
 # set it up
@@ -94,11 +94,11 @@ out = pyfakewebcam.FakeWebcam(outdev, resfps[0], resfps[1])
 ##############################################################################
 def stream_it(frame):
     # show result on opencv window, needed to interact with keyboard
-    cv.imshow('cam', frame)
+    imshowframe = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+    cv.imshow('cam', imshowframe)
     # stream to virtual device using pyfakewebcam
     # can be seen via ffplay /dev/video10
-    frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-    out.schedule_frame(frame)    
+    out.schedule_frame(frame)
 
 ##############################################################################
 # MAIN LOOP FOR THE STREAMING
