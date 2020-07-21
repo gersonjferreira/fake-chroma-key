@@ -67,11 +67,8 @@ def get_mask(frame, back):
     mask = cv.medianBlur(mask, mblur)
     # erode and dilate back to eliminate small noise
     # erode N times & dilate N+1 to get the mask a bit bigger than foreground
-    mask = cv.erode(mask, kernel)
-    mask = cv.erode(mask, kernel)
-    mask = cv.dilate(mask, kernel)
-    mask = cv.dilate(mask, kernel)
-    mask = cv.dilate(mask, kernel)
+    mask = cv.erode(mask, kernel, iterations=2)
+    mask = cv.dilate(mask, kernel, iterations=3)
     # gaussian blur to make the edges smooth
     mask = cv.GaussianBlur(mask, (gblur, gblur), 0)
     # apply mask to each component and change background
