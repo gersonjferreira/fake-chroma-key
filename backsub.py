@@ -11,8 +11,8 @@ indev = 2 # opencv index for the chosen webcam
 outdev = '/dev/video10' # virtual webcam from v4l2loopback module
 # replace background with: 'chromakey', 'blur', path to image
 #howto = 'ImageTest640x480.JPG'
-#howto = 'chromakey'
-howto = 'blur'
+howto = 'chromakey'
+#howto = 'blur'
 # resolution, fps and color
 resfps = [640, 480, 30] # resolution and fps for both input and output
 chromakey = [0, 255, 0] # color for the new background in BGR
@@ -26,20 +26,23 @@ gblur2 = 51 # gaussian blur to blur the background if howto='blur'
 
 ##############################################################################
 # APPLY MASK TO REMOVE BACKGROUND OR REPLACE WITH IMAGE
-# add option to blur background instead of removing it?
+#
+# flipping index 0 and 2 
+#    to avoid having to call cvtColor from BGR to RGB when calling
+#    pyfakewebcam
 ##############################################################################
 def how_to_apply_mask(howto):
     if howto == "chromakey":
         def applymask(frame, mask, newback):
             # newback is ignored in this case
-            frame[:,:,0] = frame[:,:,0] * mask + (1-mask)*chromakey[0]
             frame[:,:,1] = frame[:,:,1] * mask + (1-mask)*chromakey[1]
-            frame[:,:,2] = frame[:,:,2] * mask + (1-mask)*chromakey[2]
+            frame[:,:,2], frame[:,:,0] = (frame[:,:,0] * mask + (1-mask)*chromakey[0],
+                                          frame[:,:,2] * mask + (1-mask)*chromakey[2])
     elif howto == "blur" or isfile(howto):
         def applymask(frame, mask, newback):
-            frame[:,:,0] = frame[:,:,0] * mask + (1-mask)*newback[:,:,0]
             frame[:,:,1] = frame[:,:,1] * mask + (1-mask)*newback[:,:,1]
-            frame[:,:,2] = frame[:,:,2] * mask + (1-mask)*newback[:,:,2]    
+            frame[:,:,2], frame[:,:,0] = (frame[:,:,0] * mask + (1-mask)*newback[:,:,0],
+                                          frame[:,:,2] * mask + (1-mask)*newback[:,:,2])
     return applymask
 # set it up
 applymask = how_to_apply_mask(howto)
@@ -93,7 +96,7 @@ def stream_it(frame):
     cv.imshow('cam', frame)
     # stream to virtual device using pyfakewebcam
     # can be seen via ffplay /dev/video10
-    frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+    #frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
     out.schedule_frame(frame)    
 
 ##############################################################################
