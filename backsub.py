@@ -1,7 +1,7 @@
 import numpy as np
 import cv2 as cv
-from subprocess import Popen, PIPE, DEVNULL
-from PIL import Image
+import pyfakewebcam
+
 
 '''
     PARAMETERS
@@ -18,7 +18,7 @@ gblur = 21 # gaussian blur to make the mask edges smooth
 #
 newback = cv.imread('ImageTest640x480.JPG')
 # define replacement function here to avoid ifs below
-# comment / uncomment your choice
+# comment / uncomment your choice:
 def applymask(frame, mask):
     # using chromakey
     frame[:,:,0] = frame[:,:,0] * mask + (1-mask)*chromakey[0]
@@ -39,14 +39,14 @@ cap.set(cv.CAP_PROP_FRAME_HEIGHT, resfps[1])
 cap.set(cv.CAP_PROP_FPS, resfps[2])
 
 '''
-    OPEN A PIPE WITH ffmpeg TO THE VIRTUAL WEBCAM, e.g. /dev/video10
+    STREAM TO THE VIRUTAL WEBCAM, e.g. /dev/video10
     USE v4l2loopback MODULE TO CREATE THE VIRTUAL DEVICE FIRST
         install:
             https://github.com/umlaeute/v4l2loopback
         load as:
             sudo modprobe v4l2loopback video_nr=10
 '''
-out = Popen(['ffmpeg', '-y', '-i', '-', '-pix_fmt', 'yuyv422', '-f', 'v4l2', outdev], stdin=PIPE, stdout=DEVNULL, stderr=DEVNULL)
+out = pyfakewebcam.FakeWebcam(outdev, resfps[0], resfps[1])
 
 
 '''
@@ -95,10 +95,9 @@ while(True):
     # must stay open so we can press 'c' to update background photo
     cv.imshow('cam', frame)
     
-    # pipe result to ffmpeg
+    # stream to virtual device using pyfakewebcam
     frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-    frame = Image.fromarray(np.uint8(frame))
-    frame.save(out.stdin, 'BMP')
+    out.schedule_frame(frame)    
     
     # check key
     keypressed = cv.waitKey(1)
@@ -115,5 +114,4 @@ while(True):
 # close all devices
 cap.release()
 cv.destroyAllWindows()
-out.stdin.close()
-out.wait()
+
