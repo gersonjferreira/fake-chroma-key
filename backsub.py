@@ -21,7 +21,9 @@ chromakey = [0, 255, 0] # color for the new background in BGR
 # kernel and threshold paramters
 dilate_size = 5 # number of pixels to dilate the mask before blur
 threshold_min = 10 # level to make the mask binary
-mblur = 21 # median blur to elimante noise from the mask
+#mblur = 21 # median blur to elimante noise from the mask
+N_erode = 2 # number of times to erode the mask
+N_dilate = 2 # number of times to dilate the mask
 gblur = 21 # gaussian blur to make the mask edges smooth
 gblur2 = 51 # gaussian blur to blur the background if howto='blur'
 
@@ -64,11 +66,10 @@ def get_mask(frame, back):
     # a better threshold would improve the code a lot!
     ret, mask = cv.threshold(mask, threshold_min, 255, 0) 
     # apply gaussian blur to the mask to eliminate some noise
-    mask = cv.medianBlur(mask, mblur)
+    #mask = cv.medianBlur(mask, mblur)
     # erode and dilate back to eliminate small noise
-    # erode N times & dilate N+1 to get the mask a bit bigger than foreground
-    mask = cv.erode(mask, kernel, iterations=2)
-    mask = cv.dilate(mask, kernel, iterations=3)
+    mask = cv.erode(mask, kernel, iterations=N_erode)
+    mask = cv.dilate(mask, kernel, iterations=N_dilate)
     # gaussian blur to make the edges smooth
     mask = cv.GaussianBlur(mask, (gblur, gblur), 0)
     # apply mask to each component and change background
