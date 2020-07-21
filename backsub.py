@@ -36,14 +36,14 @@ def how_to_apply_mask(howto):
             newframe[:,:,0] = frame[:,:,0] * mask + (1-mask)*chromakey[0]
             newframe[:,:,1] = frame[:,:,1] * mask + (1-mask)*chromakey[1]
             newframe[:,:,2] = frame[:,:,2] * mask + (1-mask)*chromakey[2]
-            frame = newframe
+            return newframe
     elif howto == "blur" or isfile(howto):
         def applymask(frame, mask, newback):
             newframe = np.empty_like(frame)
             newframe[:,:,0] = frame[:,:,0] * mask + (1-mask)*newback[:,:,0]
             newframe[:,:,1] = frame[:,:,1] * mask + (1-mask)*newback[:,:,1]
             newframe[:,:,2] = frame[:,:,2] * mask + (1-mask)*newback[:,:,2]
-            frame = newframe
+            return newframe
     return applymask
 # set it up
 applymask = how_to_apply_mask(howto)
@@ -119,7 +119,7 @@ while(True): # loop until key 'q' is pressed
     # get the mask and apply in place
     mask = get_mask(frame, back)
     # and apply it to frame
-    applymask(frame, mask, newback)
+    frame = applymask(frame, mask, newback)
     # stream the result
     stream_it(frame)
     
