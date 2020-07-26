@@ -13,15 +13,15 @@ indev = 2 # opencv index for the chosen webcam
 outdev = '/dev/video10' # virtual webcam from v4l2loopback module
 # replace background with: 'chromakey', 'blur', path to image
 #howto = 'ImageTest640x480.JPG'
-howto = 'chromakey'
-#howto = 'blur'
+#howto = 'chromakey'
+howto = 'blur'
 # resolution, fps and color
 resfps = [640, 480, 30] # resolution and fps for both input and output
 chromakey = [0, 255, 0] # color for the new background in BGR
 # kernel and threshold paramters
 dilate_size = 5 # number of pixels to dilate the mask before blur
 threshold_min = 10 # level to make the mask binary
-#mblur = 21 # median blur to elimante noise from the mask
+mblur = 21 # median blur to elimante noise from the mask
 N_erode = 2 # number of times to erode the mask
 N_dilate = 2 # number of times to dilate the mask
 gblur = 21 # gaussian blur to make the mask edges smooth
@@ -66,7 +66,7 @@ def get_mask(frame, back):
     # a better threshold would improve the code a lot!
     ret, mask = cv.threshold(mask, threshold_min, 255, 0) 
     # apply gaussian blur to the mask to eliminate some noise
-    #mask = cv.medianBlur(mask, mblur)
+    mask = cv.medianBlur(mask, mblur)
     # erode and dilate back to eliminate small noise
     mask = cv.erode(mask, kernel, iterations=N_erode)
     mask = cv.dilate(mask, kernel, iterations=N_dilate)
