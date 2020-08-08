@@ -26,7 +26,7 @@ chromakey = [0, 255, 0] # color for the new background in BGR
 # kernel and threshold paramters
 dilate_size = 5 # number of pixels to dilate the mask before blur
 threshold_min = 10 # level to make the mask binary
-mblur = 21 # median blur to elimante noise from the mask
+mblur = 21 # median blur to eliminate noise from the mask
 N_erode = 2 # number of times to erode the mask
 N_dilate = 2 # number of times to dilate the mask
 gblur = 21 # gaussian blur to make the mask edges smooth
