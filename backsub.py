@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+# to init the virutal webcam run:
+#   sudo modprobe v4l2loopback video_nr=10
+# to play the stream preview run:
+#   ffplay /dev/video10
+
 import numpy as np
 import cv2 as cv
 import pyfakewebcam
@@ -92,8 +97,6 @@ out = pyfakewebcam.FakeWebcam(outdev, resfps[0], resfps[1])
 # HOW TO OUTPUT THE RESULT?
 ##############################################################################
 def stream_it(frame):
-    # show result on opencv window, needed to interact with keyboard
-    cv.imshow('cam', frame)
     # stream to virtual device using pyfakewebcam
     # can be seen via ffplay /dev/video10
     #frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
@@ -111,6 +114,10 @@ elif isfile(howto):
     newback = cv.imread(howto)
 else:
     newback = None
+# show captured background on opencv window
+# we need this window to interact with keyboard
+# but we don't need to keep the stream running there
+cv.imshow('cam', back)
 # ENTER THE LOOP
 while(True): # loop until key 'q' is pressed
     # read a frame
@@ -130,6 +137,8 @@ while(True): # loop until key 'q' is pressed
     elif keypressed == ord('c'):
         # update background picture if press 'c'
         ret, back = cap.read()
+        # update image on opencv window
+        cv.imshow('cam', back)
         if howto == "blur":
             newback = cv.GaussianBlur(back, (gblur2, gblur2), 0)
 
