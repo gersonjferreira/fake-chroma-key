@@ -1,0 +1,6 @@
+[Aug 8, 2020]
+
+- the stream_it function does not stream to the HighGUI window anymore to reduce CPU usage
+- HighGUI shows only the current background picture and listen for keypress
+- loop a few times (30 frames, 1 sec) without calling waitKey to avoid the 1 ms delay
+- updated README.md
