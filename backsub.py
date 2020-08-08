@@ -120,14 +120,18 @@ else:
 cv.imshow('cam', back)
 # ENTER THE LOOP
 while(True): # loop until key 'q' is pressed
-    # read a frame
-    ret, frame = cap.read() 
-    # get the mask and apply in place
-    mask = get_mask(frame, back)
-    # and apply it to frame
-    applymask(frame, mask, newback)
-    # stream the result
-    stream_it(frame)
+
+    # run some frames without check for key
+    # to avoide the 1 ms delay
+    for i in range(30):
+        # read a frame
+        ret, frame = cap.read() 
+        # get the mask and apply in place
+        mask = get_mask(frame, back)
+        # and apply it to frame
+        applymask(frame, mask, newback)
+        # stream the result
+        stream_it(frame)
     
     # check key
     keypressed = cv.waitKey(1)
