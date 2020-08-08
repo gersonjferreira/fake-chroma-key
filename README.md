@@ -1,8 +1,8 @@
 # Fake Chroma Key for Webinars
 
-This is a very simple code to capture a webcam stream, remove its background using [openCV](https://opencv.org/) and export it as a virtual webcam using the [v4l2loopback](https://github.com/umlaeute/v4l2loopback) module using a pipe to [ffmpeg](https://ffmpeg.org/).
+This is a very simple code to capture a webcam stream, remove its background using [openCV](https://opencv.org/) and export it as a virtual webcam using the [v4l2loopback](https://github.com/umlaeute/v4l2loopback) module using the [pyfakewebcam](https://github.com/jremmons/pyfakewebcam) package to stream it.
 
-Check my video showing the code running on my [youtube channel](https://youtu.be/ly5gwzSZ_MQ). For this video I've added a few openCV windows to show the mask and illustrate the code working, which made the code too heavy and the video has some lags because of this. But showing a single openCV window is not that heavy. In any case, in the next version I'll improve it all a bit, adding an option to hide the screen and simply export to the virtual webcam.
+Check my video showing the code running on my [youtube channel](https://youtu.be/ly5gwzSZ_MQ). For this video I've added a few openCV windows to show the mask and illustrate the code working, which made the code too heavy and the video has some lags because of this. But the working version is much faster.
 
 ## How does it work?
 
@@ -38,6 +38,12 @@ To delete it, simply unload the module
 $ sudo rmmod v4l2loopback
 ```
 
+To see the streaming on a window you can run
+
+```bash
+$ ffplay /dev/video10
+```
+
 ### Edit the parameters and run the python script
 
 At the beginning of the code you should check some parameters. Particularly `indev` and `outdev` for the input and output devices.
@@ -48,14 +54,6 @@ At the beginning of the code you should check some parameters. Particularly `ind
 Next run `$ python backsub.py` and the webcam stream will be extracted and piped to the virtual device.
 
 To properly remove the background you need good lighting and you must allow the code to take a picture of the clean background. So, leave the webcam steady and get out of the picture. Press *c* and the code will capture the background. Now you can go back to your seat and the background will be gone.
-
-## To do
-
-The code works well for me as it is. But it would be great if we could improve it by:
-
-- rewrite as a C library to be integrated into [webcamoid](https://webcamoid.github.io/), or as an [OBS Studio](https://obsproject.com/) plugin.
-- organize it as a proper python library and cythonize it.
-- replace with ffmpeg pipe with a better approach to stream to the virtual device using v4l2 directly.
 
 # Acknowledgements
 
